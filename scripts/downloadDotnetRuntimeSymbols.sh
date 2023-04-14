@@ -1,8 +1,12 @@
 #!/bin/sh
+
+# How to use:
+# ./downloadDotnetRuntimeSymbols $DOTNET_VERSION
+
 DOTNET_VERSION_TO_DOWNLOAD=$1
 if [ -z "$DOTNET_VERSION_TO_DOWNLOAD" ]
 then
-    echo "Please provide a dotnet version e.g. './downloadsharedruntimesymbols 7.0.0'"
+    echo "Please provide a dotnet version e.g. './downloadDotnetRuntimeSymbols 7.0.0'"
     exit 1
 fi
 
