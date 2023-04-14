@@ -1,4 +1,4 @@
-# Dotnet Development
+# .NET Dev Notes
 
 ## VS Code
 
