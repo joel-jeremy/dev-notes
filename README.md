@@ -1,8 +1,8 @@
-# dotnet-development
+# Dotnet Development
 
-# VS Code
+## VS Code
 
-## Download Shared Runtime Symbols for Debugging
+### Download Shared Runtime Symbols for Debugging
 
 (See: https://github.com/dotnet/symstore/blob/main/src/dotnet-symbol/README.md)
 
