@@ -1,0 +1,64 @@
+#!/bin/sh
+DOTNET_VERSION_TO_DOWNLOAD=$1
+if [ -z "$DOTNET_VERSION_TO_DOWNLOAD" ]
+then
+    echo "Please provide a dotnet version e.g. './downloadsharedruntimesymbols 7.0.0'"
+    exit 1
+fi
+
+TEMP_SYMBOLS_DIR=./symbols
+TEMP_DOTNET_TOOLS_PATH=./temp-dotnet-tools
+
+OS=
+DOTNET_SHARED_RUNTIME_DIR=
+
+UNAME="`uname -o`"
+if [[ "$UNAME" -eq "Msys" ]]
+then
+    OS="Windows"
+    DOTNET_SHARED_RUNTIME_DIR="/c/Program Files/dotnet/shared"
+else
+    OS="Linux"
+    DOTNET_SHARED_RUNTIME_DIR="/usr/share/dotnet/shared"
+fi
+
+echo "OS is $OS"
+echo "Shared runtime directory is $DOTNET_SHARED_RUNTIME_DIR"
+
+DOTNET_NETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR="$TEMP_SYMBOLS_DIR/Microsoft.NETCore.App/$DOTNET_VERSION_TO_DOWNLOAD"
+DOTNET_NETCORE_APP_RUNTIME_DIR="$DOTNET_SHARED_RUNTIME_DIR/Microsoft.NETCore.App/$DOTNET_VERSION_TO_DOWNLOAD"
+DOTNET_ASPNETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR="$TEMP_SYMBOLS_DIR/Microsoft.AspNetCore.App/$DOTNET_VERSION_TO_DOWNLOAD"
+DOTNET_ASPNETCORE_APP_RUNTIME_DIR="$DOTNET_SHARED_RUNTIME_DIR/Microsoft.AspNetCore.App/$DOTNET_VERSION_TO_DOWNLOAD"
+
+# Install dotnet-symbol
+dotnet tool install dotnet-symbol --tool-path "$TEMP_DOTNET_TOOLS_PATH"
+
+# Download symbols (PDBs)
+dotnet symbol --symbols --output "$DOTNET_NETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR" "$DOTNET_NETCORE_APP_RUNTIME_DIR/"
+dotnet symbol --symbols --output "$DOTNET_ASPNETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR" "$DOTNET_ASPNETCORE_APP_RUNTIME_DIR/"
+
+# Windows only.
+if [[ "$OS" -eq "Windows" ]]
+then
+    DOTNET_WINDOWSDESKTOP_APP_RUNTIME_TEMP_SYMBOLS_DIR="$TEMP_SYMBOLS_DIR/Microsoft.WindowsDesktop.App/$DOTNET_VERSION_TO_DOWNLOAD"
+    DOTNET_WINDOWSDESKTOP_APP_RUNTIME_DIR="$DOTNET_SHARED_RUNTIME_DIR/Microsoft.WindowsDesktop.App/$DOTNET_VERSION_TO_DOWNLOAD"
+    echo "Downloading Microsoft.WindowsDesktop.App sources"
+    dotnet symbol --symbols --output "$DOTNET_WINDOWSDESKTOP_APP_RUNTIME_TEMP_SYMBOLS_DIR" "$DOTNET_WINDOWSDESKTOP_APP_RUNTIME_DIR/"
+    
+    echo "Copying $DOTNET_WINDOWSDESKTOP_APP_RUNTIME_TEMP_SYMBOLS_DIR contents to $DOTNET_WINDOWSDESKTOP_APP_RUNTIME_DIR..."
+    cp "$DOTNET_WINDOWSDESKTOP_APP_RUNTIME_TEMP_SYMBOLS_DIR"/* "$DOTNET_WINDOWSDESKTOP_APP_RUNTIME_DIR"
+fi
+
+# Copy Microsoft.NETCore.App symbols
+echo "Copying $DOTNET_NETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR contents to $DOTNET_NETCORE_APP_RUNTIME_DIR..."
+cp "$DOTNET_NETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR"/* "$DOTNET_NETCORE_APP_RUNTIME_DIR"
+
+# Copy Microsoft.AspNetCore.App symbols
+echo "Copying $DOTNET_ASPNETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR contents to $DOTNET_ASPNETCORE_APP_RUNTIME_DIR..."
+cp "$DOTNET_ASPNETCORE_APP_RUNTIME_TEMP_SYMBOLS_DIR"/* "$DOTNET_ASPNETCORE_APP_RUNTIME_DIR"
+
+# Uninstall dotnet-symbol
+dotnet tool uninstall dotnet-symbol --tool-path "$TEMP_DOTNET_TOOLS_PATH"
+
+rm -r $TEMP_DOTNET_TOOLS_PATH
+rm -r $TEMP_SYMBOLS_DIR
