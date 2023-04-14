@@ -126,4 +126,4 @@
     kubectl --kubeconfig ./path/to/minikubeconfig get pods
     ```
 
-    (`--kubeconfig` is only needed if we didn't add the Minikube config to `$HOME/.kube/config`)
+    (`--kubeconfig` is only needed if Minikube config wasn't added to `$HOME/.kube/config`)
