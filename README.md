@@ -104,10 +104,10 @@
 
         e.g.
         ```sh
-        dotnet symbol --symbols --output /temp/symbols /usr/share/dotnet/shared/Microsoft.NETCore.App/7.0.0/*
+        dotnet symbol --symbols --output /temp/symbols /usr/share/dotnet/shared/Microsoft.NETCore.App/7.0.0/
         ```
         ```sh
-        dotnet symbol --symbols --output /temp/symbols /usr/share/dotnet/shared/Microsoft.AspNetCore.App/7.0.0/*
+        dotnet symbol --symbols --output /temp/symbols /usr/share/dotnet/shared/Microsoft.AspNetCore.App/7.0.0/
         ```
     3. Copy symbol files (PDB)s to runtime directory so the native debuggers like lldb or gdb can find them, but the copy needs to be superuser
         ```sh
