@@ -20,7 +20,7 @@
 
 4. Open a new bash terminal running in Windows and export the above variables (or put the export commands in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime)
 
-    Make sure to prefix `DOCKER_CERT_PATH` with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution) otherwise Docker will not be able to find the directory when run outside of WSL i.e.
+    Make sure to prefix `DOCKER_CERT_PATH` with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution Minikube is running on) otherwise Docker will not be able to find the directory when run outside of WSL i.e.
 
     ```sh
     export DOCKER_CERT_PATH="//wsl$/Ubuntu/home/jay/.minikube/certs"
@@ -75,7 +75,7 @@
 
 4. Copy the output of above command and save to a file e.g. `wslminikubeconfig` (or add it `$HOME/.kube/config` file to avoid having to pass a `--kubeconfig` to `kubectl` everytime)
 
-    Make sure to prefix all the directories in the config (such as `certificate-authority`, `client-certificate`, `client-key`) with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution) otherwise `kubectl` will not be able to find the directories when run outside of WSL i.e.
+    Make sure to prefix all the directories in the config (such as `certificate-authority`, `client-certificate`, `client-key`) with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution Minikube is running on) otherwise `kubectl` will not be able to find the directories when run outside of WSL i.e.
 
     ```yaml
     apiVersion: v1
