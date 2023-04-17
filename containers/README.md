@@ -1,10 +1,18 @@
-# Docker Dev Notes
+# Container Dev Notes
 
 ## WSL
 
 ### Point WSL Docker CLI to WSL Minikube's Docker Daemon
 
 - Run command: `eval $(minikube docker-env)`
+
+### Make kubectl alias to use Minikube's kubectl
+
+1. Add the below alias to `~/.bash_profile` or `~/.bashrc` e.g.
+
+    ```sh
+    alias kubectl="minikube kubectl --"
+    ```
 
 ### Point Windows Docker CLI to WSL Minikube's Docker Daemon
 
