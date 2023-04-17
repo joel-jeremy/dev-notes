@@ -50,7 +50,7 @@
 4. In Windows, backup the contents of `$HOME/.kube/config` and replace it with contents of `mergedkubeconfig` e.g.
 
     ```sh
-    mv $HOME/.kube/config $HOME/.kube/config.bak
+    mv $HOME/.kube/config $HOME/.kube/config.$(date +%s).bak
     cp /c/Users/$WINDOWS_USER/my/path/to/mergedkubeconfig $HOME/.kube/config
     ```
 
