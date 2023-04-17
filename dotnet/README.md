@@ -91,7 +91,7 @@
 
     (See: <https://github.com/dotnet/symstore/blob/main/src/dotnet-symbol/README.md>)
 
-    (See: [Automated Script](/scripts/downloadDotnetRuntimeSymbols.sh))
+    (See: [Automated Script](scripts/downloadDotnetRuntimeSymbols.sh))
 
     1. Install `dotnet-symbol` tool
 
