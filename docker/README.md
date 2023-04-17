@@ -10,7 +10,7 @@
 
 1. Open a bash terminal and login to WSL by running `wsl` command
 2. Start Minikube (if not yet started)
-3. Run `minikube docker-env` command. The output should be something like:
+3. Inside WSL, run `minikube docker-env` command. The output should be something like:
 
     ```sh
     export DOCKER_TLS_VERIFY="1"
@@ -18,9 +18,9 @@
     export DOCKER_CERT_PATH="/home/jay/.minikube/certs"
     ```
 
-4. Open a new bash terminal running in Windows and export the above variables and values (or put the export commands in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime)
+4. In Windows, open a new bash terminal and export the above variables and values (or put the export commands in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime)
 
-    Make sure to prefix `DOCKER_CERT_PATH` with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution that is running Minikube) otherwise Docker will not be able to find the directory from Windows i.e.
+    **IMPORTANT: Make sure to prefix `DOCKER_CERT_PATH` with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution that is running Minikube) otherwise Docker will not be able to find the directory from Windows** i.e.
 
     ```sh
     export DOCKER_CERT_PATH="//wsl$/Ubuntu/home/jay/.minikube/certs"
@@ -35,95 +35,41 @@
 ### Point Windows Kubernetes CLI (kubectl) to WSL Minikube's Kubernetes Cluster
 
 1. Open a bash terminal and login to WSL by running `wsl` command
-2. Start Minikube (if not yet started)
-3. Run `minikube kubectl -- config view`. The output should be something like:
-
-    ```yaml
-    apiVersion: v1
-    clusters:
-    - cluster:
-        certificate-authority: /home/jay/.minikube/ca.crt
-        extensions:
-        - extension:
-            last-update: Thu, 06 Apr 2023 14:06:32 PDT
-            provider: minikube.sigs.k8s.io
-            version: v1.29.0
-        name: cluster_info
-        server: https://127.0.0.1:32769
-      name: dev
-    contexts:
-    - context:
-        cluster: dev
-        extensions:
-        - extension:
-            last-update: Thu, 06 Apr 2023 14:06:32 PDT
-            provider: minikube.sigs.k8s.io
-            version: v1.29.0
-        name: context_info
-        namespace: default
-        user: dev
-      name: dev
-    current-context: dev
-    kind: Config
-    preferences: {}
-    users:
-    - name: dev
-      user:
-        client-certificate: /home/jay/.minikube/profiles/dev/client.crt
-        client-key: /home/jay/.minikube/profiles/dev/client.key
-    ```
-
-4. Copy the output of above command and save to a file in Windows e.g. `wslminikubeconfig` (or add it `$HOME/.kube/config` file to avoid having to pass a `--kubeconfig` everytime)
-
-    Make sure to prefix all the directories in the config (such as `certificate-authority`, `client-certificate`, `client-key`) with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution that is running Minikube) otherwise kubectl will not be able to find the directories from Windows i.e.
-
-    ```yaml
-    apiVersion: v1
-    clusters:
-    - cluster:
-        certificate-authority: //wsl$/Ubuntu/home/jay/.minikube/ca.crt
-        extensions:
-        - extension:
-            last-update: Thu, 06 Apr 2023 14:06:32 PDT
-            provider: minikube.sigs.k8s.io
-            version: v1.29.0
-        name: cluster_info
-        server: https://127.0.0.1:32769
-      name: dev
-    contexts:
-    - context:
-        cluster: dev
-        extensions:
-        - extension:
-            last-update: Thu, 06 Apr 2023 14:06:32 PDT
-            provider: minikube.sigs.k8s.io
-            version: v1.29.0
-        name: context_info
-        namespace: default
-        user: dev
-      name: dev
-    current-context: dev
-    kind: Config
-    preferences: {}
-    users:
-    - name: dev
-      user:
-        client-certificate: //wsl$/Ubuntu/home/jay/.minikube/profiles/dev/client.crt
-        client-key: //wsl$/Ubuntu/home/jay/.minikube/profiles/dev/client.key
-    ```
-
-5. If config is added to `$HOME/.kube/config`, make sure to switch to the correct context before running any commands i.e.
+2. Start Minikube (if not yet started) i.e. `minikube start`
+3. Inside WSL, run the following command:
 
     ```sh
-    kubectl config use-context $MINIKUBE_CONTEXT 
+    KUBECONFIG=~/.kube/config:/mnt/c/Users/$WINDOWS_USER/.kube/config \
+    minikube kubectl -- config view --merge --flatten > /mnt/c/Users/$WINDOWS_USER/my/path/to/mergedkubeconfig
     ```
 
-    (Where `$MINIKUBE_CONTEXT` is the name of the context we have copied from Minikube. In this case it is `dev`.)
+    (Where `$WINDOWS_USER` is your Windows username)
 
-6. Kubectl away in Windows!
+    The resulting `mergedkubeconfig` file should look something like: [mergedkubeconfig](examples/mergedkubeconfig)
+
+4. In Windows, backup the contents of `$HOME/.kube/config` and replace it with contents of `mergedkubeconfig` e.g.
 
     ```sh
-    kubectl --kubeconfig ./path/to/minikubeconfig get pods
+    mv $HOME/.kube/config $HOME/.kube/config.bak
+    cp /c/Users/$WINDOWS_USER/my/path/to/mergedkubeconfig $HOME/.kube/config
     ```
 
-    (`--kubeconfig` is only needed if we didn't add the Minikube config to `$HOME/.kube/config`)
+    (Where `$WINDOWS_USER` is your Windows username)
+
+5. Kubectl away in Windows!
+
+    - Make sure to switch to the correct context before running any commands i.e.
+
+        ```sh
+        kubectl config use-context $MINIKUBE_CONTEXT 
+        ```
+
+        (Where `$MINIKUBE_CONTEXT` is the name of the context we have copied from Minikube. In this case it is `minikube`.)
+
+    - If switching contexts is not desired, the `--context` option may be used to specify which context should be used by the kubectl command i.e.
+
+        ```sh
+        kubectl --context $MINIKUBE_CONTEXT get pods
+        ```
+
+        (Where `$MINIKUBE_CONTEXT` is the name of the context we have copied from Minikube. In this case it is `minikube`.)
