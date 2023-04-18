@@ -1,20 +1,6 @@
-# Container Dev Notes
+# WSL Dev Notes
 
-## WSL
-
-### Point WSL Docker CLI to WSL Minikube's Docker Daemon
-
-- Run command: `eval $(minikube docker-env)`
-
-### Make kubectl alias to use Minikube's kubectl
-
-1. Add the below alias to `~/.bash_profile` or `~/.bashrc` e.g.
-
-    ```sh
-    alias kubectl="minikube kubectl --"
-    ```
-
-### Point Windows Docker CLI to WSL Minikube's Docker Daemon
+## Point Windows Docker CLI to WSL Minikube's Docker Daemon
 
 1. Open a bash terminal and login to WSL by running `wsl` command
 2. Start Minikube (if not yet started)
@@ -40,15 +26,16 @@
     docker images
     ```
 
-### Point Windows Kubernetes CLI (kubectl) to WSL Minikube's Kubernetes Cluster
+## Point Windows Kubernetes CLI (kubectl) to WSL Minikube's Kubernetes Cluster
 
 1. Open a bash terminal and login to WSL by running `wsl` command
 2. Start Minikube (if not yet started) i.e. `minikube start`
 3. Inside WSL, run the following command:
 
     ```sh
+    # Merge WSL ~/.kube/config and Windows $HOME/.kube/config and save to Windows $HOME/.kube/mergedkubeconfig.
     KUBECONFIG=~/.kube/config:/mnt/c/Users/$WINDOWS_USER/.kube/config \
-    minikube kubectl -- config view --merge --flatten > /mnt/c/Users/$WINDOWS_USER/my/path/to/mergedkubeconfig
+    minikube kubectl -- config view --merge --flatten > /mnt/c/Users/$WINDOWS_USER/.kube/mergedkubeconfig
     ```
 
     (Where `$WINDOWS_USER` is your Windows username)
@@ -59,10 +46,8 @@
 
     ```sh
     mv $HOME/.kube/config $HOME/.kube/config.$(date +%s).bak
-    cp /c/Users/$WINDOWS_USER/my/path/to/mergedkubeconfig $HOME/.kube/config
+    cp $HOME/.kube/mergedkubeconfig $HOME/.kube/config
     ```
-
-    (Where `$WINDOWS_USER` is your Windows username)
 
 5. Kubectl away in Windows!
 
