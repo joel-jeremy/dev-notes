@@ -31,13 +31,13 @@
     ```sh
     if command -v minikube &>/dev/null
     then
-    # Minikube bash completion
-    eval "$(minikube completion bash)"
-    # Kubectl bash completion
-    eval "$(minikube kubectl -- completion bash)"
-    # Make completion work with mk alias
-    complete -o default -F __start_minikube mk
-    # Make completion work with kubectl alias
-    complete -o default -F __start_kubectl kubectl
+        # Minikube bash completion
+        eval "$(minikube completion bash)"
+        # Kubectl bash completion
+        eval "$(minikube kubectl -- completion bash)"
+        # Make completion work with mk alias
+        complete -o default -F __start_minikube mk
+        # Make completion work with kubectl alias
+        complete -o default -F __start_kubectl kubectl
     fi
     ```
