@@ -33,16 +33,31 @@
 3. Inside WSL, run the following command:
 
     ```sh
-    # Merge WSL ~/.kube/config and Windows $HOME/.kube/config and save to Windows $HOME/.kube/mergedkubeconfig.
-    KUBECONFIG=~/.kube/config:/mnt/c/Users/$WINDOWS_USER/.kube/config \
+    # Set $WINDOWS_USER.
+    WINDOWS_USER=Jay
+    # Set $KUBECONFIG.
+    KUBECONFIG=~/.kube/config:/mnt/c/Users/$WINDOWS_USER/.kube/config
+    # Merge WSL ~/.kube/config and Windows /c/Users/$WINDOWS_USER/.kube/config and save to Windows /c/Users/$WINDOWS_USER/.kube/mergedkubeconfig.
     minikube kubectl -- config view --merge --flatten > /mnt/c/Users/$WINDOWS_USER/.kube/mergedkubeconfig
     ```
 
-    (Where `$WINDOWS_USER` is your Windows username)
+    (Update the `$WINDOWS_USER` variable accordingly.)
 
     The resulting `mergedkubeconfig` file should look something like: [mergedkubeconfig](examples/mergedkubeconfig)
 
-4. In Windows, backup the contents of `$HOME/.kube/config` and replace it with contents of `mergedkubeconfig` e.g.
+4. Backup the contents of `/c/Users/$WINDOWS_USER/.kube/config` and replace it with contents of `mergedkubeconfig` e.g.
+
+    From inside WSL:
+
+    ```sh
+    # Set $WINDOWS_USER.
+    WINDOWS_USER=Jay
+    # Backup and replace config.
+    mv /mnt/c/Users/$WINDOWS_USER/.kube/config /mnt/c/Users/$WINDOWS_USER/.kube/config.$(date +%s).bak
+    cp /mnt/c/Users/$WINDOWS_USER/.kube/mergedkubeconfig /mnt/c/Users/$WINDOWS_USER/.kube/config
+    ```
+
+    Alternatively, the commands can be executed in Windows:
 
     ```sh
     mv $HOME/.kube/config $HOME/.kube/config.$(date +%s).bak
