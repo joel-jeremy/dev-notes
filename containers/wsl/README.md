@@ -1,5 +1,54 @@
 # WSL Dev Notes
 
+## Point Windows Docker CLI to WSL Docker Daemon
+
+1. Open a bash terminal and login to WSL by running `wsl` command
+2. In WSL, install Docker daemon (using preferred package manager)
+3. In WSL, [allow remote access for Docker daemon](https://docs.docker.com/config/daemon/remote-access/):  
+    - When using systemd:  
+        a. Create an override for `docker.service` using `sudo systemctl edit docker.service` and add the following lines:
+
+        ```conf
+        [Service]
+        ExecStart=
+        ExecStart=/usr/bin/dockerd
+        # You can also set the host directly here e.g.
+        # ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375
+        ```
+
+        b. (Optional if host is already set in the override above) Configure Docker daemon hosts via `/etc/docker/daemon.json`:
+
+        ```json
+        { "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"] }
+        ```
+
+        c. Reload and restart Docker daemon:
+
+        ```sh
+        systemctl daemon-reload
+        systemctl restart docker.service
+        ```
+
+    - When not using systemd:  
+        a. Configure Docker daemon hosts via `/etc/docker/daemon.json`:
+
+        ```json
+        { "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"] }
+        ```
+
+4. In Windows, find the IP address of the WSL distribution where Docker daemon is running e.g. `wsl hostname -I`
+5. Export the below variable and value (or put the export commands in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime)
+
+    ```sh
+    export DOCKER_HOST="tcp://$WSL_IP:2375"
+    ```
+
+6. Docker away in Windows!
+
+    ```sh
+    docker images
+    ```
+
 ## Point Windows Docker CLI to WSL Minikube's Docker Daemon
 
 1. Open a bash terminal and login to WSL by running `wsl` command

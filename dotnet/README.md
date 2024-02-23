@@ -87,7 +87,7 @@
     }
     ```
 
-- Download shared runtime symbols to step into .NET source
+- Download shared runtime symbol (pdb) files to step into .NET source
 
     (See: <https://github.com/dotnet/symstore/blob/main/src/dotnet-symbol/README.md>)
 
@@ -97,7 +97,7 @@
         dotnet tool install -g dotnet-symbol
         ```
 
-    2. Download symbol files (PDB)s for the shared runtime
+    2. Download symbol (pdb) files for the shared runtime
 
         (Administrator privilege is required)
 
@@ -120,7 +120,27 @@
 
     3. Debug away!
 
-- Download solution/project symbols to step into source
+- Download solution/project symbol (pdb) files to step into source
+
+    1. Install `dotnet-symbol` tool
+
+        ```sh
+        dotnet tool install -g dotnet-symbol
+        ```
+
+    2. Download symbol (pdb) files for a dotnet solution
+
+        ```sh
+        dotnet symbol --symbols --recurse-subdirectories $SOLUTION_DIR
+        ```
+
+        e.g.
+
+        ```sh
+        dotnet symbol --symbols --recurse-subdirectories .
+        ```
+
+- Download symbol (pdb) files to symbol cache
 
     1. Install `dotnet-symbol` tool
 
@@ -131,11 +151,11 @@
     2. Download symbol files for a dotnet solution
 
         ```sh
-        dotnet symbol --symbols --recurse-subdirectories $SOLUTION_DIR
+        dotnet symbol --symbols --output $SYMBOL_CACHE_DIR
         ```
 
         e.g.
 
         ```sh
-        dotnet symbol --symbols --recurse-subdirectories .
+        dotnet symbol --symbols --output /c/Temp/SymbolCache
         ```
