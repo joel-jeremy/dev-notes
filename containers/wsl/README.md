@@ -130,3 +130,20 @@
         ```
 
         (Where `$MINIKUBE_CONTEXT` is the name of the context we have copied from Minikube. In this case it is `minikube`.)
+
+## Fix Permission Denied Error in WSL
+
+If a permission error occurs when running docker commands in WSL, make sure to add the current WSL user to the `docker` group
+
+`docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied.`
+
+1. Create the docker group if it does not exist:
+    - `sudo groupadd docker`
+2. Add your user to the docker group:
+    - `sudo usermod -aG docker $USER`
+3. Log in to the new docker group (to avoid having to log out and log in again; but if not enough, try to reboot):
+    - `newgrp docker`
+4. Check if Docker can be run without root:
+    - `docker run hello-world`
+5. Reboot if you still get an error:
+    - `reboot`
