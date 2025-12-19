@@ -37,10 +37,17 @@
         ```
 
 4. In Windows, find the IP address of the WSL distribution where Docker daemon is running e.g. `wsl hostname -I`
-5. Export the below variable and value (or put the export commands in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime)
+5. Export the below variable and value in the terminal
 
     ```sh
+    # Put the command in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime
     export DOCKER_HOST="tcp://$WSL_IP:2375"
+    ```
+
+    ```powershell
+    # PowerShell
+    # Put the command whichever file is defined in the `$PROFILE` variable to avoid having to export the variables everytime
+    $env:DOCKER_HOST="tcp://$WSL_IP:2375"
     ```
 
 6. Docker away in Windows!
@@ -61,12 +68,19 @@
     export DOCKER_CERT_PATH="/home/jay/.minikube/certs"
     ```
 
-4. In Windows, open a new bash terminal and export the above variables and values (or put the export commands in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime)
+4. In Windows, open a new terminal and export the above variables and values
 
     **IMPORTANT: Make sure to prefix `DOCKER_CERT_PATH` with `//wsl$/$DISTRIBUTION_NAME` (where `$DISTRIBUTION_NAME` is the name of the WSL distribution that is running Minikube) otherwise Docker will not be able to find the directory from Windows** i.e.
 
     ```sh
+    # Put the command in `$HOME/.bash_profile` or `$HOME/.bashrc` file to avoid having to export the variables everytime
     export DOCKER_CERT_PATH="//wsl$/Ubuntu/home/jay/.minikube/certs"
+    ```
+
+    ```powershell
+    # PowerShell
+    # Put the command whichever file is defined in the `$PROFILE` variable to avoid having to export the variables everytime
+    $env:DOCKER_CERT_PATH="//wsl$/Ubuntu/home/jay/.minikube/certs"
     ```
 
 5. Docker away in Windows!
